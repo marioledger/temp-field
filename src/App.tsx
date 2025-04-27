@@ -18,6 +18,7 @@ import DroneDetail from "./pages/DroneDetail";
 import Calculator from "./pages/Calculator";
 import Clients from "./pages/Clients";
 import ClientDetail from "./pages/ClientDetail";
+import RoutePlanner from "./pages/RoutePlanner";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="drones/:id" element={<DroneDetail />} />
             <Route path="clients" element={<Clients />} />
             <Route path="clients/:id" element={<ClientDetail />} />
+            <Route path="route-planner" element={<RoutePlanner />} />
             <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
