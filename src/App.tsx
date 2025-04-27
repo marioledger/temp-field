@@ -19,6 +19,8 @@ import Calculator from "./pages/Calculator";
 import Clients from "./pages/Clients";
 import ClientDetail from "./pages/ClientDetail";
 import RoutePlanner from "./pages/RoutePlanner";
+import Inventory from "./pages/Inventory";
+import InventoryItemDetail from "./pages/InventoryItemDetail";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +44,8 @@ const App = () => (
             <Route path="clients" element={<Clients />} />
             <Route path="clients/:id" element={<ClientDetail />} />
             <Route path="route-planner" element={<RoutePlanner />} />
+            <Route path="inventory" element={<Inventory />} />
+            <Route path="inventory/:id" element={<InventoryItemDetail />} />
             <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
