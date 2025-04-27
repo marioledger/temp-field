@@ -6,7 +6,7 @@ import {
   Home, 
   Calendar, 
   Map, 
-  Drone, 
+  Plane, 
   ClipboardList,
   Settings,
   Menu
@@ -25,7 +25,7 @@ const AppSidebar: React.FC = () => {
     { name: "Calendar", path: "/calendar", icon: Calendar },
     { name: "Fields", path: "/fields", icon: Map },
     { name: "Tasks", path: "/tasks", icon: ClipboardList },
-    { name: "Drones", path: "/drones", icon: Drone },
+    { name: "Drones", path: "/drones", icon: Plane },
     { name: "Settings", path: "/settings", icon: Settings },
   ];
 
@@ -50,7 +50,7 @@ const AppSidebar: React.FC = () => {
       <div className="flex items-center justify-between p-4">
         {!collapsed && (
           <div className="flex items-center">
-            <Drone className="h-8 w-8 text-primary" />
+            <Plane className="h-8 w-8 text-primary" />
             <h1 className="text-xl font-bold ml-2 text-primary">DroneField</h1>
           </div>
         )}

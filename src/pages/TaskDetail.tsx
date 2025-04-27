@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getTaskById, getFieldById, getDroneById } from "@/data/mockData";
@@ -7,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { 
-  ArrowLeft, Edit, Trash2, Calendar, Map, Drone, 
+  ArrowLeft, Edit, Trash2, Calendar, Map, Plane, 
   CheckCircle, ArrowRightCircle, AlertCircle, XCircle, ClipboardCheck
 } from "lucide-react";
 import { formatDate } from "@/lib/formatDate";
@@ -91,7 +90,6 @@ const TaskDetail: React.FC = () => {
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Task Details */}
         <Card className="lg:col-span-2">
           <CardHeader>
             <CardTitle>Task Details</CardTitle>
@@ -180,9 +178,7 @@ const TaskDetail: React.FC = () => {
           </CardContent>
         </Card>
         
-        {/* Field and Drone Info */}
         <div className="space-y-6">
-          {/* Field Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -207,11 +203,10 @@ const TaskDetail: React.FC = () => {
             </CardContent>
           </Card>
           
-          {/* Drone Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Drone className="h-5 w-5 mr-2" />
+                <Plane className="h-5 w-5 mr-2" />
                 Drone Information
               </CardTitle>
             </CardHeader>
@@ -238,7 +233,6 @@ const TaskDetail: React.FC = () => {
             </CardContent>
           </Card>
           
-          {/* Task Log Link */}
           <Card>
             <CardContent className="pt-6">
               <Button 

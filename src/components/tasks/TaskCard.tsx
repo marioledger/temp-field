@@ -1,8 +1,7 @@
-
 import React from "react";
 import { Task } from "@/data/mockData";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { Calendar, Drone, Map } from "lucide-react";
+import { Calendar, Plane, Map } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/formatDate";
@@ -86,7 +85,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, compact = false }) => {
             <span>{task.fieldName}</span>
           </div>
           <div className="flex items-center text-sm">
-            <Drone className="h-4 w-4 mr-2 text-muted-foreground" />
+            <Plane className="h-4 w-4 mr-2 text-muted-foreground" />
             <span>{task.droneName}</span>
           </div>
           <div className="flex items-center text-sm">

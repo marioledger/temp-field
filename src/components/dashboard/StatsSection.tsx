@@ -2,7 +2,7 @@
 import React from "react";
 import { businessSummary } from "@/data/mockData";
 import { Card, CardContent } from "@/components/ui/card";
-import { Map, Drone, ClipboardList, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Map, Plane, ClipboardList, CheckCircle, Clock, AlertCircle } from "lucide-react";
 
 const StatsSection: React.FC = () => {
   const statCards = [
@@ -15,7 +15,7 @@ const StatsSection: React.FC = () => {
     {
       title: "Drones",
       value: businessSummary.totalDrones,
-      icon: Drone,
+      icon: Plane,
       color: "text-green-500"
     },
     {

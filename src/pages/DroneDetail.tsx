@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import TaskCard from "@/components/tasks/TaskCard";
-import { ArrowLeft, Edit, Trash2, Calendar, Battery, Clock } from "lucide-react";
+import { ArrowLeft, Edit, Trash2, Calendar, Battery, Clock, Plane } from "lucide-react";
 import { formatShortDate } from "@/lib/formatDate";
 import { useToast } from "@/hooks/use-toast";
 
