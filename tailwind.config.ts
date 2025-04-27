@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,24 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Farm theme colors
+				"farm-green": {
+					50: "#f1f8e9",
+					100: "#dcedc8",
+					200: "#c5e1a5",
+					300: "#aed581",
+					400: "#9ccc65",
+					500: "#8bc34a",
+					600: "#7cb342",
+					700: "#689f38",
+					800: "#558b2f",
+					900: "#33691e",
+				},
+				"status-planned": "#2196F3", // Blue
+				"status-progress": "#FFC107", // Amber
+				"status-completed": "#4CAF50", // Green
+				"status-cancelled": "#F44336", // Red
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -69,7 +87,7 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			keyframes: {
-				'accordion-down': {
+				"accordion-down": {
 					from: {
 						height: '0'
 					},
@@ -77,7 +95,7 @@ export default {
 						height: 'var(--radix-accordion-content-height)'
 					}
 				},
-				'accordion-up': {
+				"accordion-up": {
 					from: {
 						height: 'var(--radix-accordion-content-height)'
 					},
@@ -87,8 +105,8 @@ export default {
 				}
 			},
 			animation: {
-				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				"accordion-down": 'accordion-down 0.2s ease-out',
+				"accordion-up": 'accordion-up 0.2s ease-out'
 			}
 		}
 	},
