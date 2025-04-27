@@ -9,7 +9,8 @@ import {
   Plane, 
   ClipboardList,
   Settings,
-  Menu
+  Menu,
+  Calculator
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -24,6 +25,7 @@ const AppSidebar: React.FC = () => {
     { name: "Dashboard", path: "/", icon: Home },
     { name: "Calendar", path: "/calendar", icon: Calendar },
     { name: "Fields", path: "/fields", icon: Map },
+    { name: "Calculator", path: "/calculator", icon: Calculator },
     { name: "Tasks", path: "/tasks", icon: ClipboardList },
     { name: "Drones", path: "/drones", icon: Plane },
     { name: "Settings", path: "/settings", icon: Settings },

@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      clients: {
+        Row: {
+          address: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
       domain_feedback: {
         Row: {
           bad_logo_url: string | null
@@ -41,6 +68,175 @@ export type Database = {
           id?: string
         }
         Relationships: []
+      }
+      drone_assignments: {
+        Row: {
+          created_at: string
+          drone_id: string | null
+          end_date: string | null
+          id: string
+          start_date: string
+          team_member_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          drone_id?: string | null
+          end_date?: string | null
+          id?: string
+          start_date: string
+          team_member_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          drone_id?: string | null
+          end_date?: string | null
+          id?: string
+          start_date?: string
+          team_member_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drone_assignments_drone_id_fkey"
+            columns: ["drone_id"]
+            isOneToOne: false
+            referencedRelation: "drones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drone_assignments_team_member_id_fkey"
+            columns: ["team_member_id"]
+            isOneToOne: false
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drone_batteries: {
+        Row: {
+          created_at: string
+          cycle_count: number | null
+          drone_id: string | null
+          id: string
+          purchase_date: string | null
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          cycle_count?: number | null
+          drone_id?: string | null
+          id?: string
+          purchase_date?: string | null
+          status: string
+        }
+        Update: {
+          created_at?: string
+          cycle_count?: number | null
+          drone_id?: string | null
+          id?: string
+          purchase_date?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drone_batteries_drone_id_fkey"
+            columns: ["drone_id"]
+            isOneToOne: false
+            referencedRelation: "drones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drones: {
+        Row: {
+          battery: number
+          created_at: string
+          flight_hours: number
+          id: string
+          last_maintenance: string | null
+          model: string
+          name: string
+          next_maintenance: string | null
+          seed_capacity: number | null
+          seed_rate: number | null
+          spray_capacity: number | null
+          spray_rate: number | null
+          status: string
+        }
+        Insert: {
+          battery: number
+          created_at?: string
+          flight_hours?: number
+          id?: string
+          last_maintenance?: string | null
+          model: string
+          name: string
+          next_maintenance?: string | null
+          seed_capacity?: number | null
+          seed_rate?: number | null
+          spray_capacity?: number | null
+          spray_rate?: number | null
+          status: string
+        }
+        Update: {
+          battery?: number
+          created_at?: string
+          flight_hours?: number
+          id?: string
+          last_maintenance?: string | null
+          model?: string
+          name?: string
+          next_maintenance?: string | null
+          seed_capacity?: number | null
+          seed_rate?: number | null
+          spray_capacity?: number | null
+          spray_rate?: number | null
+          status?: string
+        }
+        Relationships: []
+      }
+      fields: {
+        Row: {
+          area: number
+          client_id: string | null
+          created_at: string
+          crop_type: string | null
+          id: string
+          image_url: string | null
+          last_operation: string | null
+          location: string | null
+          name: string
+        }
+        Insert: {
+          area: number
+          client_id?: string | null
+          created_at?: string
+          crop_type?: string | null
+          id?: string
+          image_url?: string | null
+          last_operation?: string | null
+          location?: string | null
+          name: string
+        }
+        Update: {
+          area?: number
+          client_id?: string | null
+          created_at?: string
+          crop_type?: string | null
+          id?: string
+          image_url?: string | null
+          last_operation?: string | null
+          location?: string | null
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fields_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       idea_stages: {
         Row: {
@@ -203,6 +399,39 @@ export type Database = {
         }
         Relationships: []
       }
+      route_plans: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          start_date: string
+          task_ids: string[] | null
+          total_distance: number | null
+          total_time: number | null
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          name: string
+          start_date: string
+          task_ids?: string[] | null
+          total_distance?: number | null
+          total_time?: number | null
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          name?: string
+          start_date?: string
+          task_ids?: string[] | null
+          total_distance?: number | null
+          total_time?: number | null
+        }
+        Relationships: []
+      }
       scraped_sites: {
         Row: {
           created_at: string
@@ -281,6 +510,99 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tasks: {
+        Row: {
+          area_completed: number | null
+          assigned_user_id: string | null
+          completed_date: string | null
+          created_at: string
+          drone_id: string | null
+          field_id: string | null
+          id: string
+          notes: string | null
+          priority: string
+          recurrence: string | null
+          scheduled_date: string
+          status: string
+          title: string
+          type: string
+        }
+        Insert: {
+          area_completed?: number | null
+          assigned_user_id?: string | null
+          completed_date?: string | null
+          created_at?: string
+          drone_id?: string | null
+          field_id?: string | null
+          id?: string
+          notes?: string | null
+          priority: string
+          recurrence?: string | null
+          scheduled_date: string
+          status: string
+          title: string
+          type: string
+        }
+        Update: {
+          area_completed?: number | null
+          assigned_user_id?: string | null
+          completed_date?: string | null
+          created_at?: string
+          drone_id?: string | null
+          field_id?: string | null
+          id?: string
+          notes?: string | null
+          priority?: string
+          recurrence?: string | null
+          scheduled_date?: string
+          status?: string
+          title?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_drone_id_fkey"
+            columns: ["drone_id"]
+            isOneToOne: false
+            referencedRelation: "drones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_field_id_fkey"
+            columns: ["field_id"]
+            isOneToOne: false
+            referencedRelation: "fields"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_members: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          phone: string | null
+          role: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          role: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          role?: string
+        }
+        Relationships: []
       }
       user_videos: {
         Row: {

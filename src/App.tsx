@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import FieldDetail from "./pages/FieldDetail";
 import TaskDetail from "./pages/TaskDetail";
 import DroneDetail from "./pages/DroneDetail";
+import Calculator from "./pages/Calculator";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +30,7 @@ const App = () => (
             <Route path="calendar" element={<Calendar />} />
             <Route path="fields" element={<Fields />} />
             <Route path="fields/:id" element={<FieldDetail />} />
+            <Route path="calculator" element={<Calculator />} />
             <Route path="tasks" element={<Tasks />} />
             <Route path="tasks/:id" element={<TaskDetail />} />
             <Route path="drones" element={<Drones />} />
