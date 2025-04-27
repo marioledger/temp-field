@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -10,7 +9,8 @@ import {
   ClipboardList,
   Settings,
   Menu,
-  Calculator
+  Calculator,
+  Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -28,6 +28,7 @@ const AppSidebar: React.FC = () => {
     { name: "Calculator", path: "/calculator", icon: Calculator },
     { name: "Tasks", path: "/tasks", icon: ClipboardList },
     { name: "Drones", path: "/drones", icon: Plane },
+    { name: "Clients", path: "/clients", icon: Users },
     { name: "Settings", path: "/settings", icon: Settings },
   ];
 

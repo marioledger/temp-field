@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +16,8 @@ import FieldDetail from "./pages/FieldDetail";
 import TaskDetail from "./pages/TaskDetail";
 import DroneDetail from "./pages/DroneDetail";
 import Calculator from "./pages/Calculator";
+import Clients from "./pages/Clients";
+import ClientDetail from "./pages/ClientDetail";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +38,8 @@ const App = () => (
             <Route path="tasks/:id" element={<TaskDetail />} />
             <Route path="drones" element={<Drones />} />
             <Route path="drones/:id" element={<DroneDetail />} />
+            <Route path="clients" element={<Clients />} />
+            <Route path="clients/:id" element={<ClientDetail />} />
             <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
