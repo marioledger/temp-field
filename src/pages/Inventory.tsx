@@ -1,21 +1,38 @@
-
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search, Plus } from "lucide-react";
+import { Search, Tag, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { useNavigate } from "react-router-dom";
 
 const Inventory: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const { toast } = useToast();
+  const navigate = useNavigate();
   
-  // This will be replaced with actual data from Supabase
   const mockInventoryItems = [
-    { id: "1", name: "Drone Battery Pack", category: "batteries", quantity: 5, status: "available" },
-    { id: "2", name: "Spray Tank 500L", category: "tanks", quantity: 2, status: "available" },
+    { 
+      id: "1", 
+      name: "Drone Battery Pack", 
+      category: "batteries", 
+      quantity: 5, 
+      status: "available",
+      serialNumber: "BAT-2024-001",
+      image: "photo-1487887235947-a955ef187fcc"
+    },
+    { 
+      id: "2", 
+      name: "Spray Tank 500L", 
+      category: "tanks", 
+      quantity: 2, 
+      status: "available",
+      serialNumber: "TNK-2024-001",
+      image: "photo-1618160702438-9b02ab6515c9"
+    },
     { id: "3", name: "Pump 12V", category: "pumps", quantity: 3, status: "available" },
     { id: "4", name: "Pickup Truck", category: "vehicles", quantity: 1, status: "in-use" },
     { id: "5", name: "Utility Trailer", category: "trailers", quantity: 1, status: "available" },
@@ -24,25 +41,17 @@ const Inventory: React.FC = () => {
     { id: "8", name: "Corn Seeds", category: "seeds", quantity: 200, status: "available", unit: "kg" },
   ];
   
-  // Filter items based on search and category
   const filteredItems = mockInventoryItems.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = (
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.serialNumber?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     const matchesCategory = activeCategory === "all" || item.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
   
-  const handleAddItem = () => {
-    toast({
-      title: "Coming Soon",
-      description: "Add inventory item functionality will be available after connecting to Supabase.",
-    });
-  };
-  
   const handleItemClick = (itemId: string) => {
-    toast({
-      title: "Coming Soon",
-      description: "Item detail view will be available after connecting to Supabase.",
-    });
+    navigate(`/inventory/${itemId}`);
   };
   
   return (
@@ -54,24 +63,22 @@ const Inventory: React.FC = () => {
             Manage your equipment, supplies, and vehicles.
           </p>
         </div>
-        <Button onClick={handleAddItem}>
+        <Button onClick={() => toast({ title: "Coming Soon", description: "Add item functionality will be available after connecting to Supabase." })}>
           <Plus className="h-4 w-4 mr-2" />
           Add Item
         </Button>
       </div>
       
-      {/* Search Bar */}
       <div className="relative">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
-          placeholder="Search inventory..."
+          placeholder="Search by name or serial number..."
           className="pl-8"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       
-      {/* Category Tabs */}
       <Tabs 
         defaultValue="all" 
         value={activeCategory} 
@@ -89,31 +96,46 @@ const Inventory: React.FC = () => {
         </TabsList>
       </Tabs>
       
-      {/* Inventory Items Grid */}
       {filteredItems.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {filteredItems.map((item) => (
             <Card 
               key={item.id}
-              className="p-4 cursor-pointer hover:bg-accent transition-colors"
+              className="cursor-pointer hover:bg-accent transition-colors overflow-hidden"
               onClick={() => handleItemClick(item.id)}
             >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium">{item.name}</h3>
-                  <p className="text-sm text-muted-foreground capitalize">{item.category}</p>
-                </div>
-                <div className="text-right">
-                  <div className="flex items-center">
-                    <span className={`w-2 h-2 rounded-full mr-2 ${
-                      item.status === "available" ? "bg-green-500" : "bg-amber-500"
-                    }`}></span>
-                    <span className="text-sm capitalize">{item.status}</span>
+              <div className="relative">
+                <AspectRatio ratio={4/3}>
+                  <img
+                    src={`https://images.unsplash.com/${item.image}`}
+                    alt={item.name}
+                    className="object-cover w-full h-full"
+                  />
+                </AspectRatio>
+                <div className="absolute top-2 right-2">
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    item.status === "available" ? "bg-green-500/20 text-green-700" : "bg-amber-500/20 text-amber-700"
+                  }`}>
+                    {item.status}
                   </div>
-                  <p className="text-sm font-medium">
-                    {item.quantity} {item.unit || "units"}
-                  </p>
                 </div>
+              </div>
+              <div className="p-3">
+                <div className="flex justify-between items-start gap-2">
+                  <div>
+                    <h3 className="font-medium text-sm line-clamp-1">{item.name}</h3>
+                    <p className="text-xs text-muted-foreground capitalize">{item.category}</p>
+                  </div>
+                  {item.serialNumber && (
+                    <Tag className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  )}
+                </div>
+                {item.serialNumber && (
+                  <p className="text-xs text-muted-foreground mt-1">{item.serialNumber}</p>
+                )}
+                <p className="text-xs font-medium mt-2">
+                  Qty: {item.quantity}
+                </p>
               </div>
             </Card>
           ))}
