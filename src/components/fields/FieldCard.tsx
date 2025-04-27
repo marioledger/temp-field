@@ -28,15 +28,19 @@ const FieldCard: React.FC<FieldCardProps> = ({ field }) => {
         />
       </div>
       <CardContent className="pt-4">
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between items-start mb-2">
           <h3 className="font-medium text-lg">{field.name}</h3>
           <Badge variant="outline">{field.cropType}</Badge>
         </div>
         
+        <p className="text-sm text-muted-foreground mb-3">
+          Client: {field.client.name}
+        </p>
+        
         <div className="mt-2 space-y-1 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">Area:</span>
-            <span>{field.area} ha</span>
+            <span>{field.area} dunums</span>
           </div>
           {field.lastOperation && (
             <div className="flex justify-between">

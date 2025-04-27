@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { tasks, Task } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
@@ -22,13 +21,15 @@ const Calendar: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
-  // Helper function to format task dates for display
   const formatTaskDate = (task: Task) => {
     const taskDate = new Date(task.scheduledDate);
-    return `${getDayAndMonth(task.scheduledDate)} at ${formatTime(task.scheduledDate)}`;
+    const estimatedHours = task.type === 'spraying' ? 2 : 
+                          task.type === 'seeding' ? 3 :
+                          task.type === 'scouting' ? 1 : 1.5;
+    
+    return `${getDayAndMonth(task.scheduledDate)} at ${formatTime(task.scheduledDate)} (≈${estimatedHours}h)`;
   };
   
-  // Filter tasks that match the selected date or date range
   const getFilteredTasks = () => {
     const today = new Date(date);
     today.setHours(0, 0, 0, 0);
@@ -38,18 +39,16 @@ const Calendar: React.FC = () => {
     if (view === "day") {
       endDate.setHours(23, 59, 59, 999);
     } else if (view === "week") {
-      // Calculate end of week (Sunday)
       const dayOfWeek = today.getDay();
-      const diff = 6 - dayOfWeek; // Days until end of week (Sunday)
+      const diff = 6 - dayOfWeek;
       endDate.setDate(today.getDate() + diff);
       endDate.setHours(23, 59, 59, 999);
       
-      // Calculate start of week (Monday)
-      const startDiff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Days until start of week (Monday)
+      const startDiff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
       today.setDate(today.getDate() + startDiff);
     } else if (view === "month") {
       endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0, 23, 59, 59, 999);
-      today.setDate(1); // First day of month
+      today.setDate(1);
     }
     
     return tasks.filter(task => {
@@ -108,9 +107,9 @@ const Calendar: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle>
-                {view === "day" ? `Tasks for ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : 
-                 view === "week" ? `Tasks for Week of ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : 
-                 `Tasks for ${date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`}
+                {view === "day" ? `Tasks for ${date.toLocaleDateString('bs-BA', { month: 'long', day: 'numeric', year: 'numeric' })}` : 
+                 view === "week" ? `Tasks for Week of ${date.toLocaleDateString('bs-BA', { month: 'long', day: 'numeric', year: 'numeric' })}` : 
+                 `Tasks for ${date.toLocaleDateString('bs-BA', { month: 'long', year: 'numeric' })}`}
               </CardTitle>
             </CardHeader>
             <CardContent className="max-h-[500px] overflow-y-auto">
@@ -124,9 +123,13 @@ const Calendar: React.FC = () => {
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <h3 className="font-medium">{task.title}</h3>
-                          <p className="text-sm text-muted-foreground">{task.fieldName}</p>
-                          <p className="text-sm mt-1">{formatTaskDate(task)}</p>
+                          <div className="flex items-center gap-2">
+                            <h3 className="font-medium">{task.title}</h3>
+                            <span className="text-sm text-muted-foreground">
+                              ({task.fieldName} - {task.client?.name})
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{formatTaskDate(task)}</p>
                         </div>
                         <StatusBadge status={task.status} />
                       </div>

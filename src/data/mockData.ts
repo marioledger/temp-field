@@ -1,13 +1,16 @@
-
 export interface Field {
   id: string;
   name: string;
-  area: number; // in hectares
+  area: number; // in dunums
   cropType: string;
   lastOperation?: string;
   location?: string;
   image?: string;
   tasksPending: number;
+  client: {
+    name: string;
+    phone?: string;
+  };
 }
 
 export interface Drone {
@@ -46,53 +49,72 @@ export const fields: Field[] = [
   {
     id: "field1",
     name: "North Wheat Field",
-    area: 45.2,
+    area: 452, // Converted from 45.2 ha to dunums
     cropType: "Wheat",
     lastOperation: "2025-04-20",
     location: "North Section",
     image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000",
     tasksPending: 3,
+    client: {
+      name: "Farmer Emir Kovačević",
+      phone: "+387 61 234 567"
+    }
   },
   {
     id: "field2",
     name: "South Corn Field",
-    area: 32.8,
+    area: 328, // Converted from 32.8 ha to dunums
     cropType: "Corn",
     lastOperation: "2025-04-22",
     location: "South Section",
     image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1000",
     tasksPending: 1,
+    client: {
+      name: "Farmer Amira Hodžić",
+      phone: "+387 62 345 678"
+    }
   },
   {
     id: "field3",
     name: "East Soybean Field",
-    area: 28.5,
+    area: 285, // Converted from 28.5 ha to dunums
     cropType: "Soybeans",
     lastOperation: "2025-04-15",
     location: "East Section",
     image: "https://images.unsplash.com/photo-1587167647045-5e0d84343a23?q=80&w=1000",
     tasksPending: 2,
+    client: {
+      name: "Farmer Senad Mehić"
+    }
   },
   {
     id: "field4",
     name: "West Potato Field",
-    area: 18.3,
+    area: 183, // Converted from 18.3 ha to dunums
     cropType: "Potatoes",
     lastOperation: "2025-04-10",
     location: "West Section",
     image: "https://images.unsplash.com/photo-1597105263434-01b8794efea7?q=80&w=1000",
     tasksPending: 0,
+    client: {
+      name: "Farmer Ibrahim Selimović",
+      phone: "+387 63 456 789"
+    }
   },
   {
     id: "field5",
     name: "Central Barley Field",
-    area: 22.7,
+    area: 227, // Converted from 22.7 ha to dunums
     cropType: "Barley",
     lastOperation: "2025-04-18",
     location: "Central Section",
     image: "https://images.unsplash.com/photo-1536703458557-4733312fb408?q=80&w=1000",
     tasksPending: 2,
-  },
+    client: {
+      name: "Farmer Fatima Begić",
+      phone: "+387 64 567 890"
+    }
+  }
 ];
 
 // Mock data for drones
