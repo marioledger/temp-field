@@ -42,6 +42,10 @@ export interface Task {
   areaCompleted?: number;
   priority: 'low' | 'medium' | 'high';
   recurrence?: 'none' | 'daily' | 'weekly' | 'monthly';
+  client?: {
+    name: string;
+    phone?: string;
+  };
 }
 
 // Mock data for fields
@@ -176,6 +180,10 @@ export const tasks: Task[] = [
     notes: "Apply post-emergence herbicide across entire field",
     priority: "high",
     recurrence: "none",
+    client: {
+      name: "Farmer Emir Kovačević",
+      phone: "+387 61 234 567"
+    }
   },
   {
     id: "task2",
@@ -190,6 +198,10 @@ export const tasks: Task[] = [
     notes: "Plant new corn varieties in rows 15-30",
     priority: "high",
     recurrence: "none",
+    client: {
+      name: "Farmer Amira Hodžić",
+      phone: "+387 62 345 678"
+    }
   },
   {
     id: "task3",
@@ -204,6 +216,9 @@ export const tasks: Task[] = [
     notes: "Check for signs of aphid infestation",
     priority: "medium",
     recurrence: "weekly",
+    client: {
+      name: "Farmer Senad Mehić"
+    }
   },
   {
     id: "task4",
@@ -220,6 +235,10 @@ export const tasks: Task[] = [
     notes: "Map field boundaries for precision application",
     priority: "low",
     recurrence: "none",
+    client: {
+      name: "Farmer Ibrahim Selimović",
+      phone: "+387 63 456 789"
+    }
   },
   {
     id: "task5",
@@ -234,6 +253,10 @@ export const tasks: Task[] = [
     notes: "Apply liquid nitrogen fertilizer at recommended rate",
     priority: "medium",
     recurrence: "none",
+    client: {
+      name: "Farmer Fatima Begić",
+      phone: "+387 64 567 890"
+    }
   },
   {
     id: "task6",
@@ -248,6 +271,10 @@ export const tasks: Task[] = [
     notes: "Check for signs of rust or mildew",
     priority: "medium",
     recurrence: "weekly",
+    client: {
+      name: "Farmer Emir Kovačević",
+      phone: "+387 61 234 567"
+    }
   },
   {
     id: "task7",
@@ -264,6 +291,10 @@ export const tasks: Task[] = [
     notes: "Applied insecticide to control corn borer outbreak",
     priority: "high",
     recurrence: "none",
+    client: {
+      name: "Farmer Amira Hodžić",
+      phone: "+387 62 345 678"
+    }
   },
 ];
 
