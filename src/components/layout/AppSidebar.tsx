@@ -12,7 +12,10 @@ import {
   Menu,
   Calculator,
   Users,
-  Package
+  Package,
+  CreditCard,
+  FileText,
+  Receipt
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -32,6 +35,13 @@ const AppSidebar: React.FC = () => {
     { name: "Drones", path: "/drones", icon: Plane },
     { name: "Clients", path: "/clients", icon: Users },
     { name: "Inventory", path: "/inventory", icon: Package },
+    { 
+      name: "Billing",
+      items: [
+        { name: "Invoices", path: "/invoices", icon: FileText },
+        { name: "Billing Schedules", path: "/billing-schedules", icon: Receipt }
+      ]
+    },
     { name: "Settings", path: "/settings", icon: Settings },
   ];
 
@@ -75,6 +85,41 @@ const AppSidebar: React.FC = () => {
       <nav className="flex-1 px-2 py-4">
         <ul className="space-y-2">
           {navigationItems.map((item) => {
+            if ('items' in item) {
+              // Render section with subitems
+              return (
+                <li key={item.name} className="space-y-1">
+                  {!collapsed && (
+                    <div className="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      {item.name}
+                    </div>
+                  )}
+                  <ul className="space-y-1">
+                    {item.items.map((subItem) => {
+                      const isActive = location.pathname === subItem.path;
+                      return (
+                        <li key={subItem.path}>
+                          <Link
+                            to={subItem.path}
+                            className={cn(
+                              "flex items-center px-3 py-2 rounded-md transition-colors",
+                              isActive 
+                                ? "bg-primary text-primary-foreground"
+                                : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            )}
+                          >
+                            <subItem.icon className="h-5 w-5" />
+                            {!collapsed && <span className="ml-3">{subItem.name}</span>}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+              );
+            }
+
+            // Render single item
             const isActive = location.pathname === item.path;
             return (
               <li key={item.path}>
@@ -113,3 +158,4 @@ const AppSidebar: React.FC = () => {
 };
 
 export default AppSidebar;
+
