@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Download, Send, Receipt, FileText, Mail, Printer } from "lucide-react";
+import { ArrowLeft, Download, Send, Receipt, FileText, Mail, Printer, Calendar } from "lucide-react";
 import { 
   getInvoiceById, 
   getPaymentsByInvoice, 

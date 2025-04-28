@@ -5,7 +5,7 @@ export interface Field {
   cropType: string;
   lastOperation?: string;
   location?: string;
-  coordinates?: string; // Adding the missing coordinates property
+  coordinates?: string;
   image?: string;
   tasksPending: number;
   client: {
@@ -553,6 +553,43 @@ export const billingSchedules: BillingSchedule[] = [
     active: true
   }
 ];
+
+// Field helper functions
+export const getFieldById = (id: string): Field | undefined => {
+  return fields.find(field => field.id === id);
+};
+
+export const getTasksByField = (fieldId: string): Task[] => {
+  return tasks.filter(task => task.fieldId === fieldId);
+};
+
+// Drone helper functions
+export const getDroneById = (id: string): Drone | undefined => {
+  return drones.find(drone => drone.id === id);
+};
+
+export const getTasksByDrone = (droneId: string): Task[] => {
+  return tasks.filter(task => task.droneId === droneId);
+};
+
+// Task helper functions
+export const getTaskById = (id: string): Task | undefined => {
+  return tasks.find(task => task.id === id);
+};
+
+export const getUpcomingTasks = (days: number = 7): Task[] => {
+  const today = new Date();
+  const futureDate = new Date();
+  futureDate.setDate(today.getDate() + days);
+  
+  return tasks
+    .filter(task => {
+      const taskDate = new Date(task.scheduledDate);
+      return task.status !== 'completed' && task.status !== 'cancelled' &&
+             taskDate >= today && taskDate <= futureDate;
+    })
+    .sort((a, b) => new Date(a.scheduledDate).getTime() - new Date(b.scheduledDate).getTime());
+};
 
 // Helper functions for payment and invoicing
 export const getInvoiceById = (id: string) => {
