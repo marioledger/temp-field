@@ -1,36 +1,49 @@
 
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { Search, Plus, Filter, MoreHorizontal, Calendar } from "lucide-react";
+import { Plus, FileText, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Invoice, invoices, getInvoicesByStatus, getPaidTotal, getOutstandingTotal } from "@/data/mockData";
+import { DateRange } from "react-day-picker";
 import { useNavigate } from "react-router-dom";
-import { Invoice, invoices } from "@/data/mockData";
-import InvoiceStatusBadge from "@/components/invoices/InvoiceStatusBadge";
+import { format, parseISO, isWithinInterval } from "date-fns";
+
+// Custom components
+import InvoiceFilters from "@/components/invoices/InvoiceFilters";
+import InvoiceSummaryCards from "@/components/invoices/InvoiceSummaryCards";
+import InvoiceTable from "@/components/invoices/InvoiceTable";
+import BatchActionsMenu from "@/components/invoices/BatchActionsMenu";
+import GenerateBillingDialog from "@/components/billing/GenerateBillingDialog";
 
 const Invoices: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>(invoices);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [sortOption, setSortOption] = useState<string>("date-desc");
+  const [selectedInvoices, setSelectedInvoices] = useState<string[]>([]);
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Format currency helper
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'BAM',
+      minimumFractionDigits: 2,
+    }).format(amount);
+  };
+  
+  // Handler for bulk export
+  const handleExportCSV = () => {
+    toast({
+      title: "Exporting data",
+      description: "Your invoice data is being exported as CSV.",
+    });
+  };
+
+  // Filter and sort invoices based on criteria
   useEffect(() => {
     let results = invoices;
     
@@ -48,24 +61,46 @@ const Invoices: React.FC = () => {
       );
     }
     
-    setFilteredInvoices(results);
-  }, [searchTerm, statusFilter]);
-  
-  const handleCreateInvoice = () => {
-    toast({
-      title: "Feature in development",
-      description: "Creating new invoices will be available soon.",
+    // Apply date range filter
+    if (dateRange?.from) {
+      results = results.filter(invoice => {
+        const invoiceDate = parseISO(invoice.issueDate);
+        if (dateRange.to) {
+          return isWithinInterval(invoiceDate, { start: dateRange.from, end: dateRange.to });
+        }
+        return format(invoiceDate, 'yyyy-MM-dd') === format(dateRange.from, 'yyyy-MM-dd');
+      });
+    }
+    
+    // Apply sorting
+    results = [...results].sort((a, b) => {
+      switch (sortOption) {
+        case "date-asc":
+          return new Date(a.issueDate).getTime() - new Date(b.issueDate).getTime();
+        case "date-desc":
+          return new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime();
+        case "amount-asc":
+          return a.total - b.total;
+        case "amount-desc":
+          return b.total - a.total;
+        case "client":
+          return a.clientName.localeCompare(b.clientName);
+        default:
+          return new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime();
+      }
     });
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'BAM',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
-
+    
+    setFilteredInvoices(results);
+    
+    // Clear selection when filters change
+    setSelectedInvoices([]);
+  }, [searchTerm, statusFilter, dateRange, sortOption]);
+  
+  // Calculate financial totals
+  const totalInvoiced = invoices.reduce((sum, invoice) => sum + invoice.total, 0);
+  const totalPaid = getPaidTotal();
+  const totalOutstanding = getOutstandingTotal();
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -75,180 +110,57 @@ const Invoices: React.FC = () => {
             Manage invoices and view payment status
           </p>
         </div>
-        <Button onClick={handleCreateInvoice}>
-          <Plus className="mr-2 h-4 w-4" /> Create Invoice
-        </Button>
-      </div>
-      
-      {/* Filter and Search */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search invoices..."
-            className="pl-8"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
+        <div className="flex gap-3">
+          <Button variant="outline" onClick={handleExportCSV}>
+            <Download className="mr-2 h-4 w-4" /> Export
+          </Button>
+          <GenerateBillingDialog />
         </div>
-        
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">
-              <Filter className="mr-2 h-4 w-4" /> 
-              {statusFilter ? `Status: ${statusFilter}` : "Filter by Status"}
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => setStatusFilter(null)}>
-              All Statuses
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setStatusFilter("draft")}>
-              Draft
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setStatusFilter("sent")}>
-              Sent
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setStatusFilter("paid")}>
-              Paid
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setStatusFilter("overdue")}>
-              Overdue
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setStatusFilter("cancelled")}>
-              Cancelled
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
       
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Invoiced
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {formatCurrency(invoices.reduce((sum, invoice) => sum + invoice.total, 0))}
-            </div>
-          </CardContent>
-        </Card>
+      <InvoiceSummaryCards 
+        totalInvoiced={totalInvoiced}
+        totalPaid={totalPaid}
+        totalOverdue={totalOutstanding}
+        formatCurrency={formatCurrency}
+      />
+      
+      {/* Advanced Filters */}
+      <div className="flex flex-col gap-4">
+        <InvoiceFilters 
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+        />
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Paid
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-600">
-              {formatCurrency(invoices
-                .filter(invoice => invoice.status === 'paid')
-                .reduce((sum, invoice) => sum + invoice.total, 0)
-              )}
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Outstanding Amount
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-amber-600">
-              {formatCurrency(invoices
-                .filter(invoice => ['sent', 'overdue'].includes(invoice.status))
-                .reduce((sum, invoice) => sum + invoice.total, 0)
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {selectedInvoices.length > 0 && (
+          <div className="flex items-center justify-between bg-primary/5 p-2 rounded-md">
+            <span className="text-sm font-medium ml-2">
+              {selectedInvoices.length} {selectedInvoices.length === 1 ? 'invoice' : 'invoices'} selected
+            </span>
+            <BatchActionsMenu 
+              selectedIds={selectedInvoices} 
+              onClearSelection={() => setSelectedInvoices([])}
+            />
+          </div>
+        )}
       </div>
       
       {/* Invoices Table */}
       <Card>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Invoice #</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Issue Date</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-                <TableHead className="w-[80px]"></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredInvoices.length > 0 ? (
-                filteredInvoices.map((invoice) => (
-                  <TableRow key={invoice.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/invoices/${invoice.id}`)}>
-                    <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
-                    <TableCell>{invoice.clientName}</TableCell>
-                    <TableCell>{invoice.issueDate}</TableCell>
-                    <TableCell>{invoice.dueDate}</TableCell>
-                    <TableCell>
-                      <InvoiceStatusBadge status={invoice.status} />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {formatCurrency(invoice.total)}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            className="h-8 w-8 p-0"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/invoices/${invoice.id}`);
-                          }}>
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => {
-                            e.stopPropagation();
-                            toast({
-                              title: "Feature in development",
-                              description: "This feature will be available soon."
-                            });
-                          }}>
-                            Download PDF
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => {
-                            e.stopPropagation();
-                            toast({
-                              title: "Feature in development",
-                              description: "This feature will be available soon."
-                            });
-                          }}>
-                            Mark as Paid
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={7} className="text-center py-10">
-                    <div className="text-muted-foreground">No invoices found</div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <InvoiceTable 
+            invoices={filteredInvoices} 
+            formatCurrency={formatCurrency}
+            selectedIds={selectedInvoices}
+            setSelectedIds={setSelectedInvoices}
+          />
         </CardContent>
       </Card>
     </div>
