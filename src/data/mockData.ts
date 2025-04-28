@@ -49,6 +49,61 @@ export interface Task {
   };
 }
 
+// Payment and invoice related interfaces
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+export type PaymentMethod = 'cash' | 'bank_transfer' | 'credit_card' | 'check';
+
+export interface InvoiceItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  taskId?: string;
+  fieldId?: string;
+}
+
+export interface Invoice {
+  id: string;
+  clientId: string;
+  clientName: string;
+  invoiceNumber: string;
+  issueDate: string;
+  dueDate: string;
+  status: InvoiceStatus;
+  items: InvoiceItem[];
+  subtotal: number;
+  taxRate: number;
+  taxAmount: number;
+  total: number;
+  notes?: string;
+}
+
+export interface Payment {
+  id: string;
+  invoiceId: string;
+  invoiceNumber: string;
+  clientId: string;
+  clientName: string;
+  date: string;
+  amount: number;
+  method: PaymentMethod;
+  reference?: string;
+  notes?: string;
+}
+
+export interface BillingSchedule {
+  id: string;
+  clientId: string;
+  clientName: string;
+  fieldId: string;
+  fieldName: string;
+  serviceName: string;
+  frequency: 'one-time' | 'weekly' | 'bi-weekly' | 'monthly' | 'quarterly' | 'yearly';
+  amount: number;
+  nextBillingDate: string;
+  active: boolean;
+}
+
 // Mock data for fields
 export const fields: Field[] = [
   {
@@ -304,46 +359,243 @@ export const tasks: Task[] = [
   },
 ];
 
-// Helper function to get upcoming tasks (next 7 days)
-export const getUpcomingTasks = () => {
+// Mock data for invoices
+export const invoices: Invoice[] = [
+  {
+    id: "inv1",
+    clientId: "client1",
+    clientName: "Farmer Emir Kovačević",
+    invoiceNumber: "INV-2025-001",
+    issueDate: "2025-04-15",
+    dueDate: "2025-04-30",
+    status: "sent",
+    items: [
+      {
+        id: "item1",
+        description: "Herbicide Application - North Wheat Field",
+        quantity: 1,
+        unitPrice: 1500,
+        taskId: "task1",
+        fieldId: "field1"
+      },
+      {
+        id: "item2",
+        description: "Disease Monitoring Service - North Wheat Field",
+        quantity: 2,
+        unitPrice: 500,
+        taskId: "task6",
+        fieldId: "field1"
+      }
+    ],
+    subtotal: 2500,
+    taxRate: 17,
+    taxAmount: 425,
+    total: 2925,
+    notes: "Payment due within 15 days."
+  },
+  {
+    id: "inv2",
+    clientId: "client2",
+    clientName: "Farmer Amira Hodžić",
+    invoiceNumber: "INV-2025-002",
+    issueDate: "2025-04-20",
+    dueDate: "2025-05-05",
+    status: "paid",
+    items: [
+      {
+        id: "item3",
+        description: "Emergency Pest Control - South Corn Field",
+        quantity: 1,
+        unitPrice: 2000,
+        taskId: "task7",
+        fieldId: "field2"
+      },
+      {
+        id: "item4",
+        description: "Corn Seeding Service - South Corn Field",
+        quantity: 1,
+        unitPrice: 3500,
+        taskId: "task2",
+        fieldId: "field2"
+      }
+    ],
+    subtotal: 5500,
+    taxRate: 17,
+    taxAmount: 935,
+    total: 6435,
+    notes: "Thank you for your prompt payment!"
+  },
+  {
+    id: "inv3",
+    clientId: "client3",
+    clientName: "Farmer Senad Mehić",
+    invoiceNumber: "INV-2025-003",
+    issueDate: "2025-04-22",
+    dueDate: "2025-05-07",
+    status: "draft",
+    items: [
+      {
+        id: "item5",
+        description: "Weekly Scouting - East Soybean Field",
+        quantity: 4,
+        unitPrice: 350,
+        taskId: "task3",
+        fieldId: "field3"
+      }
+    ],
+    subtotal: 1400,
+    taxRate: 17,
+    taxAmount: 238,
+    total: 1638,
+    notes: "Monthly scouting service."
+  },
+  {
+    id: "inv4",
+    clientId: "client4",
+    clientName: "Farmer Ibrahim Selimović",
+    invoiceNumber: "INV-2025-004",
+    issueDate: "2025-04-01",
+    dueDate: "2025-04-16",
+    status: "overdue",
+    items: [
+      {
+        id: "item6",
+        description: "Border Mapping Service - West Potato Field",
+        quantity: 1,
+        unitPrice: 1200,
+        taskId: "task4",
+        fieldId: "field4"
+      }
+    ],
+    subtotal: 1200,
+    taxRate: 17,
+    taxAmount: 204,
+    total: 1404,
+    notes: "Payment is overdue. Please remit as soon as possible."
+  }
+];
+
+// Mock data for payments
+export const payments: Payment[] = [
+  {
+    id: "pay1",
+    invoiceId: "inv2",
+    invoiceNumber: "INV-2025-002",
+    clientId: "client2",
+    clientName: "Farmer Amira Hodžić",
+    date: "2025-04-25",
+    amount: 6435,
+    method: "bank_transfer",
+    reference: "TRF25042025",
+    notes: "Paid in full via bank transfer."
+  },
+  {
+    id: "pay2",
+    invoiceId: "inv1",
+    invoiceNumber: "INV-2025-001",
+    clientId: "client1",
+    clientName: "Farmer Emir Kovačević",
+    date: "2025-04-20",
+    amount: 1500,
+    method: "cash",
+    notes: "Partial payment received."
+  }
+];
+
+// Mock data for billing schedules
+export const billingSchedules: BillingSchedule[] = [
+  {
+    id: "sched1",
+    clientId: "client1",
+    clientName: "Farmer Emir Kovačević",
+    fieldId: "field1",
+    fieldName: "North Wheat Field",
+    serviceName: "Weekly Disease Monitoring",
+    frequency: "weekly",
+    amount: 500,
+    nextBillingDate: "2025-05-01",
+    active: true
+  },
+  {
+    id: "sched2",
+    clientId: "client2",
+    clientName: "Farmer Amira Hodžić",
+    fieldId: "field2",
+    fieldName: "South Corn Field",
+    serviceName: "Monthly Pest Control",
+    frequency: "monthly",
+    amount: 2000,
+    nextBillingDate: "2025-05-25",
+    active: true
+  },
+  {
+    id: "sched3",
+    clientId: "client3",
+    clientName: "Farmer Senad Mehić",
+    fieldId: "field3",
+    fieldName: "East Soybean Field",
+    serviceName: "Weekly Scouting Service",
+    frequency: "weekly",
+    amount: 350,
+    nextBillingDate: "2025-04-29",
+    active: true
+  },
+  {
+    id: "sched4",
+    clientId: "client5",
+    clientName: "Farmer Fatima Begić",
+    fieldId: "field5",
+    fieldName: "Central Barley Field",
+    serviceName: "Quarterly Field Assessment",
+    frequency: "quarterly",
+    amount: 3000,
+    nextBillingDate: "2025-06-18",
+    active: true
+  }
+];
+
+// Helper functions for payment and invoicing
+export const getInvoiceById = (id: string) => {
+  return invoices.find(invoice => invoice.id === id);
+};
+
+export const getInvoicesByStatus = (status: InvoiceStatus) => {
+  return invoices.filter(invoice => invoice.status === status);
+};
+
+export const getInvoicesByClient = (clientId: string) => {
+  return invoices.filter(invoice => invoice.clientId === clientId);
+};
+
+export const getPaymentsByInvoice = (invoiceId: string) => {
+  return payments.filter(payment => payment.invoiceId === invoiceId);
+};
+
+export const getPaymentsByClient = (clientId: string) => {
+  return payments.filter(payment => payment.clientId === clientId);
+};
+
+export const getUpcomingBillings = (daysAhead: number = 7) => {
   const today = new Date();
-  const nextWeek = new Date(today);
-  nextWeek.setDate(today.getDate() + 7);
+  const futureDate = new Date(today);
+  futureDate.setDate(today.getDate() + daysAhead);
   
-  return tasks.filter(task => {
-    const taskDate = new Date(task.scheduledDate);
-    return taskDate >= today && taskDate <= nextWeek && task.status !== 'completed' && task.status !== 'cancelled';
+  return billingSchedules.filter(schedule => {
+    const billingDate = new Date(schedule.nextBillingDate);
+    return schedule.active && billingDate >= today && billingDate <= futureDate;
   });
 };
 
-// Helper function to get tasks by status
-export const getTasksByStatus = (status: TaskStatus) => {
-  return tasks.filter(task => task.status === status);
+export const getInvoiceTotal = () => {
+  return invoices.reduce((sum, invoice) => sum + invoice.total, 0);
 };
 
-// Helper function to get tasks by field
-export const getTasksByField = (fieldId: string) => {
-  return tasks.filter(task => task.fieldId === fieldId);
+export const getPaidTotal = () => {
+  return payments.reduce((sum, payment) => sum + payment.amount, 0);
 };
 
-// Helper function to get tasks by drone
-export const getTasksByDrone = (droneId: string) => {
-  return tasks.filter(task => task.droneId === droneId);
-};
-
-// Helper function to get field by ID
-export const getFieldById = (id: string) => {
-  return fields.find(field => field.id === id);
-};
-
-// Helper function to get drone by ID
-export const getDroneById = (id: string) => {
-  return drones.find(drone => drone.id === id);
-};
-
-// Helper function to get task by ID
-export const getTaskById = (id: string) => {
-  return tasks.find(task => task.id === id);
+export const getOutstandingTotal = () => {
+  return getInvoiceTotal() - getPaidTotal();
 };
 
 // Business summary data

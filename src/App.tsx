@@ -21,6 +21,9 @@ import ClientDetail from "./pages/ClientDetail";
 import RoutePlanner from "./pages/RoutePlanner";
 import Inventory from "./pages/Inventory";
 import InventoryItemDetail from "./pages/InventoryItemDetail";
+import Invoices from "./pages/Invoices";
+import InvoiceDetail from "./pages/InvoiceDetail";
+import BillingSchedules from "./pages/BillingSchedules";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +49,9 @@ const App = () => (
             <Route path="route-planner" element={<RoutePlanner />} />
             <Route path="inventory" element={<Inventory />} />
             <Route path="inventory/:id" element={<InventoryItemDetail />} />
+            <Route path="invoices" element={<Invoices />} />
+            <Route path="invoices/:id" element={<InvoiceDetail />} />
+            <Route path="billing-schedules" element={<BillingSchedules />} />
             <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<NotFound />} />
