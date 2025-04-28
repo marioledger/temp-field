@@ -15,7 +15,8 @@ import {
   Package,
   CreditCard,
   FileText,
-  Receipt
+  Receipt,
+  Route
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -33,6 +34,7 @@ const AppSidebar: React.FC = () => {
     { name: "Calculator", path: "/calculator", icon: Calculator },
     { name: "Tasks", path: "/tasks", icon: ClipboardList },
     { name: "Drones", path: "/drones", icon: Plane },
+    { name: "Route Planner", path: "/route-planner", icon: Route },
     { name: "Clients", path: "/clients", icon: Users },
     { name: "Inventory", path: "/inventory", icon: Package },
     { 
@@ -158,4 +160,3 @@ const AppSidebar: React.FC = () => {
 };
 
 export default AppSidebar;
-

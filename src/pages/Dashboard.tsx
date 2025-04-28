@@ -1,115 +1,99 @@
 
 import React from "react";
 import StatsSection from "@/components/dashboard/StatsSection";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { tasks, getUpcomingTasks, fields, drones } from "@/data/mockData";
 import TaskCard from "@/components/tasks/TaskCard";
-import FieldCard from "@/components/fields/FieldCard";
-import DroneCard from "@/components/drones/DroneCard";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { getUpcomingTasks, fields, drones, tasks } from "@/data/mockData";
-import { useNavigate } from "react-router-dom";
+import WeatherForecast from "@/components/dashboard/WeatherForecast";
 
 const Dashboard: React.FC = () => {
-  const navigate = useNavigate();
-  const upcomingTasks = getUpcomingTasks();
-  
-  // Get a few fields, drones, and recent tasks for the overview sections
-  const featuredFields = fields.slice(0, 3); 
-  const availableDrones = drones.filter(d => d.status === "available").slice(0, 2);
-  const recentTasks = [...tasks].sort((a, b) => 
-    new Date(b.scheduledDate).getTime() - new Date(a.scheduledDate).getTime()
-  ).slice(0, 3);
-  
+  const upcomingTasks = getUpcomingTasks(3); // Get tasks for next 3 days
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">Overview of your drone operations.</p>
-        </div>
-        <Button onClick={() => navigate("/tasks/new")}>New Task</Button>
-      </div>
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Welcome to DroneField</h1>
       
       <StatsSection />
       
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Upcoming Tasks */}
-        <Card className="col-span-1">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader className="pb-2">
               <CardTitle>Upcoming Tasks</CardTitle>
-              <Button size="sm" variant="outline" onClick={() => navigate("/tasks")}>View All</Button>
-            </div>
-            <CardDescription>Tasks scheduled for the next 7 days</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {upcomingTasks.length > 0 ? (
-                upcomingTasks.slice(0, 4).map(task => (
-                  <TaskCard key={task.id} task={task} compact />
-                ))
-              ) : (
-                <p className="text-center py-4 text-muted-foreground">No upcoming tasks</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {upcomingTasks.length > 0 ? (
+                  upcomingTasks.map(task => (
+                    <TaskCard key={task.id} task={task} compact />
+                  ))
+                ) : (
+                  <p className="text-muted-foreground">No upcoming tasks in the next 3 days.</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         
-        {/* Field Overview */}
-        <Card className="col-span-1">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle>Field Overview</CardTitle>
-              <Button size="sm" variant="outline" onClick={() => navigate("/fields")}>View All</Button>
-            </div>
-            <CardDescription>Quick view of your agricultural fields</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {featuredFields.map(field => (
-                <div key={field.id} className="col-span-1">
-                  <FieldCard field={field} />
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        <div className="lg:col-span-1">
+          <WeatherForecast />
+        </div>
       </div>
       
-      <div className="grid md:grid-cols-2 gap-6">
-        {/* Available Drones */}
-        <Card className="col-span-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
           <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle>Available Drones</CardTitle>
-              <Button size="sm" variant="outline" onClick={() => navigate("/drones")}>View All</Button>
-            </div>
-            <CardDescription>Drones ready for deployment</CardDescription>
+            <CardTitle>Field Status Overview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {availableDrones.map(drone => (
-                <div key={drone.id} className="col-span-1">
-                  <DroneCard drone={drone} />
+            <div className="space-y-2">
+              {fields.slice(0, 5).map(field => (
+                <div key={field.id} className="flex justify-between border-b last:border-0 py-2">
+                  <div>
+                    <div className="font-medium">{field.name}</div>
+                    <div className="text-sm text-muted-foreground">{field.cropType}</div>
+                  </div>
+                  <div className="text-right">
+                    <div>{field.area} dunums</div>
+                    <div className="text-sm text-muted-foreground">
+                      {field.tasksPending} {field.tasksPending === 1 ? "task" : "tasks"} pending
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
         
-        {/* Recent Activity */}
-        <Card className="col-span-1">
+        <Card>
           <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle>Recent Activity</CardTitle>
-              <Button size="sm" variant="outline" onClick={() => navigate("/tasks")}>View History</Button>
-            </div>
-            <CardDescription>Recently completed or active tasks</CardDescription>
+            <CardTitle>Drone Fleet Status</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {recentTasks.map(task => (
-                <TaskCard key={task.id} task={task} compact />
+              {drones.map(drone => (
+                <div key={drone.id} className="flex justify-between border-b last:border-0 py-2">
+                  <div>
+                    <div className="font-medium">{drone.name}</div>
+                    <div className="text-sm text-muted-foreground">{drone.model}</div>
+                  </div>
+                  <div className="text-right">
+                    <div>
+                      {drone.status === "available" && (
+                        <span className="text-green-600 font-medium">Available</span>
+                      )}
+                      {drone.status === "in-use" && (
+                        <span className="text-amber-600 font-medium">In Use</span>
+                      )}
+                      {drone.status === "maintenance" && (
+                        <span className="text-blue-600 font-medium">Maintenance</span>
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Battery: {drone.battery}%
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           </CardContent>
