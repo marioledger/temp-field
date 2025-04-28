@@ -5,6 +5,7 @@ export interface Field {
   cropType: string;
   lastOperation?: string;
   location?: string;
+  coordinates?: string; // Adding the missing coordinates property
   image?: string;
   tasksPending: number;
   client: {
@@ -57,6 +58,7 @@ export const fields: Field[] = [
     cropType: "Wheat",
     lastOperation: "2025-04-20",
     location: "North Section",
+    coordinates: "43.8563°N, 18.4131°E",
     image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000",
     tasksPending: 3,
     client: {
@@ -71,6 +73,7 @@ export const fields: Field[] = [
     cropType: "Corn",
     lastOperation: "2025-04-22",
     location: "South Section",
+    coordinates: "43.8201°N, 18.4100°E",
     image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1000",
     tasksPending: 1,
     client: {
@@ -85,6 +88,7 @@ export const fields: Field[] = [
     cropType: "Soybeans",
     lastOperation: "2025-04-15",
     location: "East Section",
+    coordinates: "43.8455°N, 18.4431°E",
     image: "https://images.unsplash.com/photo-1587167647045-5e0d84343a23?q=80&w=1000",
     tasksPending: 2,
     client: {
@@ -98,6 +102,7 @@ export const fields: Field[] = [
     cropType: "Potatoes",
     lastOperation: "2025-04-10",
     location: "West Section",
+    coordinates: "43.8455°N, 18.3831°E",
     image: "https://images.unsplash.com/photo-1597105263434-01b8794efea7?q=80&w=1000",
     tasksPending: 0,
     client: {
@@ -112,6 +117,7 @@ export const fields: Field[] = [
     cropType: "Barley",
     lastOperation: "2025-04-18",
     location: "Central Section",
+    coordinates: "43.8355°N, 18.4031°E",
     image: "https://images.unsplash.com/photo-1536703458557-4733312fb408?q=80&w=1000",
     tasksPending: 2,
     client: {
