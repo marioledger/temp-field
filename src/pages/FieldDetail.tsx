@@ -5,9 +5,11 @@ import { getFieldById, getTasksByField } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import TaskCard from "@/components/tasks/TaskCard";
-import { ArrowLeft, Edit, Map, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit, Map, Trash2, Calendar, Flag } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { formatDate } from "@/lib/formatDate";
 
 const FieldDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -41,6 +43,19 @@ const FieldDetail: React.FC = () => {
     );
   }
   
+  // Mock data for demonstration - would come from backend
+  const scheduledOperations = [
+    { operation: "Pesticide Spraying", frequency: "Every 2 weeks", nextDate: "2025-05-15", rate: "$45/dunum" },
+    { operation: "Fertilizer Application", frequency: "Monthly", nextDate: "2025-05-01", rate: "$35/dunum" },
+    { operation: "Crop Monitoring", frequency: "Weekly", nextDate: "2025-05-05", rate: "$20/dunum" }
+  ];
+  
+  const operationHistory = [
+    { date: "2025-04-15", operation: "Pesticide Spraying", details: "Completed - Full coverage", cost: "$450" },
+    { date: "2025-04-01", operation: "Fertilizer Application", details: "Partial application - North section", cost: "$280" },
+    { date: "2025-03-28", operation: "Crop Monitoring", details: "Growth assessment", cost: "$200" }
+  ];
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center">
@@ -50,106 +65,174 @@ const FieldDetail: React.FC = () => {
         </Button>
       </div>
       
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Field Image and Details */}
-        <div className="md:w-1/3">
-          <Card>
-            <div className="h-48 overflow-hidden">
-              <img 
-                src={field.image || "https://images.unsplash.com/photo-1465284958051-58f8082c3429?q=80&w=1000"} 
-                alt={field.name}
-                className="w-full h-full object-cover"
-              />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Field Overview Card */}
+        <Card>
+          <div className="h-48 overflow-hidden">
+            <img 
+              src={field.image || "https://images.unsplash.com/photo-1465284958051-58f8082c3429?q=80&w=1000"} 
+              alt={field.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <CardHeader>
+            <CardTitle>{field.name}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <p className="text-sm text-muted-foreground">Area</p>
+                <p className="font-medium">{field.area} ha</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Crop Type</p>
+                <p className="font-medium">{field.cropType}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Client</p>
+                <p className="font-medium">{field.client.name}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Tasks Pending</p>
+                <p className="font-medium">{field.tasksPending}</p>
+              </div>
             </div>
-            <CardHeader>
-              <CardTitle>{field.name}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <p className="text-sm text-muted-foreground">Area</p>
-                  <p className="font-medium">{field.area} ha</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Crop Type</p>
-                  <p className="font-medium">{field.cropType}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Location</p>
-                  <p className="font-medium">{field.location || "Not specified"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Tasks Pending</p>
-                  <p className="font-medium">{field.tasksPending}</p>
-                </div>
-              </div>
-              
-              <div className="flex space-x-2">
-                <Button variant="outline" className="flex-1" onClick={handleEdit}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Edit
-                </Button>
-                <Button variant="outline" className="flex-1" onClick={() => toast({
-                  title: "Coming Soon",
-                  description: "View map functionality will be available in the next update."
-                })}>
-                  <Map className="h-4 w-4 mr-2" />
-                  View Map
-                </Button>
-              </div>
-              
-              <Button variant="destructive" className="w-full" onClick={handleDelete}>
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete Field
+            
+            <Separator />
+            
+            <div className="space-y-2">
+              <h3 className="font-medium">Location Details</h3>
+              <p className="text-sm">{field.location || "Not specified"}</p>
+              <p className="text-sm text-muted-foreground">GPS Coordinates: {field.coordinates || "Not specified"}</p>
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button variant="outline" className="flex-1" onClick={handleEdit}>
+                <Edit className="h-4 w-4 mr-2" />
+                Edit
               </Button>
-            </CardContent>
-          </Card>
-        </div>
-        
+              <Button variant="outline" className="flex-1" onClick={() => toast({
+                title: "Coming Soon",
+                description: "View map functionality will be available in the next update."
+              })}>
+                <Map className="h-4 w-4 mr-2" />
+                View Map
+              </Button>
+            </div>
+            
+            <Button variant="destructive" className="w-full" onClick={handleDelete}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete Field
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Scheduled Operations */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Calendar className="h-5 w-5 mr-2" />
+              Scheduled Operations
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Operation</TableHead>
+                  <TableHead>Frequency</TableHead>
+                  <TableHead>Next Date</TableHead>
+                  <TableHead>Rate</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {scheduledOperations.map((op, index) => (
+                  <TableRow key={index}>
+                    <TableCell className="font-medium">{op.operation}</TableCell>
+                    <TableCell>{op.frequency}</TableCell>
+                    <TableCell>{formatDate(op.nextDate)}</TableCell>
+                    <TableCell>{op.rate}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
+        {/* Operation History */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Flag className="h-5 w-5 mr-2" />
+              Operation History
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Operation</TableHead>
+                  <TableHead>Details</TableHead>
+                  <TableHead>Cost</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {operationHistory.map((history, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{formatDate(history.date)}</TableCell>
+                    <TableCell className="font-medium">{history.operation}</TableCell>
+                    <TableCell>{history.details}</TableCell>
+                    <TableCell>{history.cost}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+
         {/* Field Tasks */}
-        <div className="md:w-2/3">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Field Tasks</CardTitle>
-                <Button size="sm" onClick={() => navigate(`/tasks?fieldId=${field.id}`)}>View All</Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {fieldTasks.length > 0 ? (
-                <div className="space-y-4">
-                  {fieldTasks.slice(0, 5).map(task => (
-                    <TaskCard key={task.id} task={task} />
-                  ))}
-                  
-                  {fieldTasks.length > 5 && (
-                    <Button 
-                      variant="outline" 
-                      className="w-full mt-4"
-                      onClick={() => navigate(`/tasks?fieldId=${field.id}`)}
-                    >
-                      View {fieldTasks.length - 5} More Tasks
-                    </Button>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">No tasks assigned to this field</p>
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Upcoming Tasks</CardTitle>
+              <Button size="sm" onClick={() => navigate(`/tasks?fieldId=${field.id}`)}>View All</Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {fieldTasks.length > 0 ? (
+              <div className="space-y-4">
+                {fieldTasks.slice(0, 5).map(task => (
+                  <TaskCard key={task.id} task={task} />
+                ))}
+                
+                {fieldTasks.length > 5 && (
                   <Button 
                     variant="outline" 
-                    className="mt-4"
-                    onClick={() => toast({
-                      title: "Coming Soon",
-                      description: "New task creation will be available in the next update."
-                    })}
+                    className="w-full mt-4"
+                    onClick={() => navigate(`/tasks?fieldId=${field.id}`)}
                   >
-                    Create Task
+                    View {fieldTasks.length - 5} More Tasks
                   </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground">No tasks assigned to this field</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => toast({
+                    title: "Coming Soon",
+                    description: "New task creation will be available in the next update."
+                  })}
+                >
+                  Create Task
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
