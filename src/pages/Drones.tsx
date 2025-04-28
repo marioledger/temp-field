@@ -13,10 +13,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import MaintenanceSchedule from "@/components/drones/MaintenanceSchedule";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Drones: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
+  const [activeView, setActiveView] = useState<"grid" | "maintenance">("grid");
   const { toast } = useToast();
   
   const filteredDrones = drones.filter(drone => {
@@ -85,33 +87,43 @@ const Drones: React.FC = () => {
         </DropdownMenu>
       </div>
       
-      {/* Maintenance Schedule */}
-      <MaintenanceSchedule drones={drones} />
-      
-      {/* Drone Cards */}
-      {filteredDrones.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredDrones.map((drone) => (
-            <DroneCard key={drone.id} drone={drone} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <p className="text-xl text-muted-foreground">No drones found matching your criteria</p>
-          {searchTerm || statusFilter ? (
-            <Button 
-              variant="outline" 
-              className="mt-4"
-              onClick={() => {
-                setSearchTerm("");
-                setStatusFilter(null);
-              }}
-            >
-              Clear Filters
-            </Button>
-          ) : null}
-        </div>
-      )}
+      {/* View Switcher */}
+      <Tabs value={activeView} onValueChange={(value) => setActiveView(value as "grid" | "maintenance")} className="w-full">
+        <TabsList className="w-full md:w-auto mb-2">
+          <TabsTrigger value="grid">Grid View</TabsTrigger>
+          <TabsTrigger value="maintenance">Maintenance Schedule</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="grid" className="mt-0">
+          {filteredDrones.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredDrones.map((drone) => (
+                <DroneCard key={drone.id} drone={drone} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-xl text-muted-foreground">No drones found matching your criteria</p>
+              {searchTerm || statusFilter ? (
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setStatusFilter(null);
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              ) : null}
+            </div>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="maintenance" className="mt-0">
+          <MaintenanceSchedule drones={drones} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
