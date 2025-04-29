@@ -61,7 +61,7 @@ const Invoices: React.FC = () => {
       );
     }
     
-    // Apply date range filter
+    // Apply date range filter - fixed the type issue by checking both from and to values
     if (dateRange?.from) {
       results = results.filter(invoice => {
         const invoiceDate = parseISO(invoice.issueDate);

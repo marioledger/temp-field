@@ -11,14 +11,15 @@ import { Input } from "@/components/ui/input";
 import { Search, Filter, Calendar, ArrowUpDown } from "lucide-react";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { InvoiceStatus } from "@/data/mockData";
+import { DateRange } from "react-day-picker";
 
 interface InvoiceFiltersProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   statusFilter: string | null;
   setStatusFilter: (value: string | null) => void;
-  dateRange?: { from: Date | undefined; to: Date | undefined };
-  setDateRange?: (range: { from: Date | undefined; to: Date | undefined }) => void;
+  dateRange?: DateRange;
+  setDateRange?: (range: DateRange) => void;
   sortOption?: string;
   setSortOption?: (option: string) => void;
 }

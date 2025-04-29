@@ -15,7 +15,7 @@ import {
 interface DatePickerWithRangeProps {
   className?: string;
   date: DateRange | undefined;
-  setDate: (date: DateRange) => void;
+  setDate: (date: DateRange | undefined) => void;
 }
 
 export function DatePickerWithRange({
@@ -58,6 +58,7 @@ export function DatePickerWithRange({
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}
+            className="pointer-events-auto"
           />
         </PopoverContent>
       </Popover>
